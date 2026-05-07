@@ -1,47 +1,38 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const urlInput = document.getElementById('urlInput');
-    const goBtn = document.getElementById('goBtn');
-    const proxyFrame = document.getElementById('proxyFrame');
-    const newTabBtn = document.querySelector('.new-tab');
-    
-    // Go button click
-    goBtn.addEventListener('click', navigate);
-    urlInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') navigate();
-    });
-    
-    // New tab button
-    newTabBtn.addEventListener('click', createNewTab);
-    
-    function navigate() {
-        let url = urlInput.value.trim();
-        if (!url) return;
+async function loadGames() {
+    try {
+        const thumbsResponse = await fetch('src/thumbs/');
+        const thumbsText = await thumbsResponse.text();
         
-        // Add protocol if missing
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
-        }
+        const gamesResponse = await fetch('src/games/');
+        const gamesText = await gamesResponse.text();
         
-        proxyFrame.src = url;
-        urlInput.value = url;
+        const thumbs = parseDirectory(thumbsText, 'src/thumbs/', '.jpg|.jpeg|.png|.webp');
+        const gameFiles = parseDirectory(gamesText, 'src/games/', '.html');
+        
+        // Perfect 1:1 matching by filename (minus extensions)
+        const games = gameFiles.map(filename => {
+            const baseName = filename.replace('.html', '');
+            const thumb = thumbs.find(t => 
+                t.replace(/\.(jpg|jpeg|png|webp)$/i, '') === baseName
+            ) || null;
+            
+            const cleanName = baseName
+                .replace(/[_-]/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase())
+                .replace(/\.(Html|HTML)$/i, '');
+            
+            return {
+                name: cleanName,
+                url: `src/games/${filename}`,
+                thumbnail: thumb ? `src/thumbs/${thumb}` : `https://via.placeholder.com/300x200/4ecdc4/000?text=${encodeURIComponent(cleanName)}`
+            };
+        }).filter(game => game.name !== 'Index'); // Skip index.html
+        
+        renderGames(games, 'all');
+        window.gameData = games;
+        
+    } catch (error) {
+        console.error('Auto-scan failed:', error);
+        renderGames(fallbackGames(), 'all');
     }
-    
-    function createNewTab() {
-        const tabContainer = document.querySelector('.tabs');
-        const tabs = tabContainer.querySelectorAll('.tab');
-        const newTabIndex = tabs.length;
-        
-        const newTab = document.createElement('div');
-        newTab.className = 'tab active';
-        newTab.textContent = 'New Tab';
-        newTab.dataset.tab = newTabIndex;
-        tabContainer.insertBefore(newTab, newTabBtn);
-        
-        // Remove active from others
-        tabs.forEach(tab => tab.classList.remove('active'));
-        
-        // Switch to new tab (placeholder)
-        urlInput.value = '';
-        proxyFrame.src = 'about:blank';
-    }
-});
+}
