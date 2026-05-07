@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HollowQuest - Web Proxy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HollowQuest</h1>
+            <p>Enter URL to browse</p>
+        </header>
+        
+        <main>
+            <div class="address-bar">
+                <input type="url" id="urlInput" placeholder="https://example.com" value="https://duckduckgo.com">
+                <button id="goBtn">Go</button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="0">New Tab</div>
+                <button class="new-tab">+ New Tab</button>
+            </div>
+            
+            <div class="content">
+                <iframe id="proxyFrame" src="https://duckduckgo.com" frameborder="0"></iframe>
+            </div>
+        </main>
+        
+        <footer>
+            <small>Proxy by HollowQuest</small>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
