@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>HollowQuest Proxy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HollowQuest</h1>
+            <p>Scramjet Web Proxy</p>
+        </header>
+        <div class="browser">
+            <div class="address-bar">
+                <span class="nav-dots"></span>
+                <input id="urlInput" placeholder="https://example.com" value="https://google.com">
+                <button id="goBtn">Go</button>
+            </div>
+            <div class="tabs">
+                <div class="tab active">New Tab <span class="close">×</span></div>
+                <button class="add-tab">+</button>
+            </div>
+            <iframe id="proxyFrame" src="https://google.com"></iframe>
+        </div>
+    </div>
+    <script src="/scramjet/scramjet.all.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
